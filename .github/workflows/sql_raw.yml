@@ -1,0 +1,28 @@
+name: SQL Raw Word Check
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '**.sql'
+
+jobs:
+  sql-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Debug File Structure
+        run: ls -R
+
+      - name: Scan for "raw" in SQL Files
+        run: |
+          if grep -Eir 'raw' . --include=*.sql; then
+            echo "❌ Found 'raw' in SQL files! Failing the pipeline."
+            exit 1
+          else
+            echo "✅ No 'raw' keyword found in SQL files."
+          fi
